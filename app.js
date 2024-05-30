@@ -34,14 +34,17 @@ function checkAPIKey(req, res, next) {
   next();
 }
 
-// Menggunakan middleware untuk memeriksa kunci API untuk semua rute /users
+// Menggunakan middleware untuk memeriksa kunci API untuk semua rute
 app.use("/users", checkAPIKey);
+app.use("/menu-categories", checkAPIKey);
 
 // Mengimpor router dari file routes
 const usersRouter = require("./routes/users");
+const menuCategoriesRouter = require("./routes/menuCategories");
 
-// Menggunakan router untuk rute /users
+// Menggunakan router untuk rute
 app.use("/users", usersRouter);
+app.use("/menu-categories", menuCategoriesRouter);
 
 const PORT = process.env.PORT || 8000;
 
