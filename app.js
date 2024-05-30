@@ -31,7 +31,6 @@ function checkAPIKey(req, res, next) {
   if (!apiKey || !validAPIKeys.has(apiKey)) {
     return res.status(401).json({ message: "Unauthorized!" });
   }
-  console.log("API key valid");
   next();
 }
 

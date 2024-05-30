@@ -8,6 +8,11 @@ const usersSchema = new mongoose.Schema({
   telephone: {
     type: String,
     required: true,
+    unique: true,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
   },
 });
 
