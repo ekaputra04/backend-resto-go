@@ -12,10 +12,7 @@ const validAPIKeys = new Set(process.env.VALID_API_KEYS.split(","));
 
 async function connectToDatabase() {
   try {
-    await mongoose.connect(process.env.DB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.DB_URI, {});
     console.log("Berhasil connect ke database!");
   } catch (error) {
     console.error("Gagal connect ke database:", error);
@@ -37,14 +34,17 @@ function checkAPIKey(req, res, next) {
 // Menggunakan middleware untuk memeriksa kunci API untuk semua rute
 app.use("/users", checkAPIKey);
 app.use("/menu-categories", checkAPIKey);
+app.use("/extra-menus", checkAPIKey);
 
 // Mengimpor router dari file routes
 const usersRouter = require("./routes/users");
 const menuCategoriesRouter = require("./routes/menuCategories");
+const extraMenusRouter = require("./routes/extraMenus");
 
 // Menggunakan router untuk rute
 app.use("/users", usersRouter);
 app.use("/menu-categories", menuCategoriesRouter);
+app.use("/extra-menus", extraMenusRouter);
 
 const PORT = process.env.PORT || 8000;
 
