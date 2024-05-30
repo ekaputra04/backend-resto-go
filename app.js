@@ -36,18 +36,21 @@ app.use("/users", checkAPIKey);
 app.use("/menu-categories", checkAPIKey);
 app.use("/extra-menus", checkAPIKey);
 app.use("/coupons", checkAPIKey);
+app.use("/menus", checkAPIKey);
 
 // Mengimpor router dari file routes
 const usersRouter = require("./routes/users");
 const menuCategoriesRouter = require("./routes/menuCategories");
 const extraMenusRouter = require("./routes/extraMenus");
 const couponsRouter = require("./routes/coupons");
+const menusRouter = require("./routes/menus");
 
 // Menggunakan router untuk rute
 app.use("/users", usersRouter);
 app.use("/menu-categories", menuCategoriesRouter);
 app.use("/extra-menus", extraMenusRouter);
 app.use("/coupons", couponsRouter);
+app.use("/menus", menusRouter);
 
 const PORT = process.env.PORT || 8000;
 
