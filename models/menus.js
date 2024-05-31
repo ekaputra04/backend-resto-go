@@ -11,13 +11,13 @@ const menusSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    photo_url: {
-      type: String,
-      required: true,
-    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: MenuCategories,
+      required: true,
+    },
+    url_image: {
+      type: String,
       required: true,
     },
   },

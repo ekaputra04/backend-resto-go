@@ -1,9 +1,6 @@
 const Menus = require("../models/menus");
 const MenuCategories = require("../models/menuCategories");
 
-// TODO
-// const uploadPhoto = async();
-
 async function getAllMenus(req, res) {
   try {
     const menus = await Menus.find();
@@ -37,54 +34,36 @@ const addMenus = async (req, res) => {
     }
 
     if (!Array.isArray(menusToAdd)) {
-      const { name, price, category } = menusToAdd;
+      const { name, price, category, url_image } = menusToAdd;
 
-      // Periksa apakah kategori dengan ID tersebut ada
-      const categoryExists = await MenuCategories.findById(category);
-
-      if (!categoryExists) {
-        return res.status(400).json({ message: "Kategori tidak ditemukan" });
-      }
-
-      const newMenu = await Menus.create({
+      await Menus.create({
         name,
         price,
         category,
+        url_image,
       });
 
       return res
         .status(200)
-        .json({ message: "Berhasil menambah menu!", data: newMenu });
+        .json({ message: "Berhasil menambah menu!", data: menusToAdd });
     } else if (menusToAdd.length === 0) {
       return res.status(400).json({ message: "Data menu tidak valid!" });
     }
 
-    const listMenu = [];
-
     for (let i = 0; i < menusToAdd.length; i++) {
-      const { name, price, category } = menusToAdd[i];
+      const { name, price, category, url_image } = menusToAdd;
 
-      // Periksa apakah kategori dengan ID tersebut ada
-      const categoryExists = await MenuCategories.findById(category);
-
-      if (!categoryExists) {
-        return res
-          .status(400)
-          .json({ message: `Kategori tidak ditemukan untuk menu ${name}` });
-      }
-
-      const newMenu = await Menus.create({
+      await Menus.create({
         name,
         price,
         category,
+        url_image,
       });
-
-      listMenu.push(newMenu);
     }
 
     return res
       .status(200)
-      .json({ message: "Berhasil menambah menu!", data: listMenu });
+      .json({ message: "Berhasil menambah menu!", data: menusToAdd });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: error.message });

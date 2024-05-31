@@ -44,6 +44,7 @@ const menuCategoriesRouter = require("./routes/menuCategories");
 const extraMenusRouter = require("./routes/extraMenus");
 const couponsRouter = require("./routes/coupons");
 const menusRouter = require("./routes/menus");
+const imagesRouter = require("./routes/images");
 
 // Menggunakan router untuk rute
 app.use("/users", usersRouter);
@@ -51,6 +52,7 @@ app.use("/menu-categories", menuCategoriesRouter);
 app.use("/extra-menus", extraMenusRouter);
 app.use("/coupons", couponsRouter);
 app.use("/menus", menusRouter);
+app.use("/images", imagesRouter);
 
 const PORT = process.env.PORT || 8000;
 
