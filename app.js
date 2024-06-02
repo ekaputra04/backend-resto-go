@@ -32,12 +32,12 @@ function checkAPIKey(req, res, next) {
 }
 
 // Menggunakan middleware untuk memeriksa kunci API untuk semua rute
-app.use("/users", checkAPIKey);
-app.use("/menu-categories", checkAPIKey);
-app.use("/extra-menus", checkAPIKey);
-app.use("/coupons", checkAPIKey);
-app.use("/menus", checkAPIKey);
-app.use("/orders", checkAPIKey);
+// app.use("/users", checkAPIKey);
+// app.use("/menu-categories", checkAPIKey);
+// app.use("/extra-menus", checkAPIKey);
+// app.use("/coupons", checkAPIKey);
+// app.use("/menus", checkAPIKey);
+// app.use("/orders", checkAPIKey);
 
 // Mengimpor router dari file routes
 const usersRouter = require("./routes/users");

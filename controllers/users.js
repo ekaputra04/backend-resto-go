@@ -24,6 +24,20 @@ const getUser = async (req, res) => {
   }
 };
 
+const getUserFromTelephone = async (req, res) => {
+  try {
+    const { telephone } = req.params;
+    const user = await Users.findOne({ telephone: telephone });
+    if (!user) {
+      return res.status(404).json({ message: "User tidak ditemukan!" });
+    }
+    return res.status(200).json({ data: user });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const addUsers = async (req, res) => {
   try {
     const usersToAdd = req.body.data;
@@ -110,4 +124,11 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, getUser, addUsers, editUser, deleteUser };
+module.exports = {
+  getAllUsers,
+  getUser,
+  addUsers,
+  editUser,
+  deleteUser,
+  getUserFromTelephone,
+};
