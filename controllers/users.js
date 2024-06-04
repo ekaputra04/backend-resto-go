@@ -47,11 +47,12 @@ const addUsers = async (req, res) => {
     }
 
     if (!Array.isArray(usersToAdd)) {
-      const { name, telephone } = usersToAdd;
+      const { name, telephone, isAdmin } = usersToAdd;
 
       await Users.create({
         name,
         telephone,
+        isAdmin,
       });
 
       return res
@@ -62,11 +63,12 @@ const addUsers = async (req, res) => {
     }
 
     for (let i = 0; i < usersToAdd.length; i++) {
-      const { name, telephone } = usersToAdd[i];
+      const { name, telephone, isAdmin } = usersToAdd[i];
 
       await Users.create({
         name,
         telephone,
+        isAdmin,
       });
     }
 
@@ -81,7 +83,7 @@ const addUsers = async (req, res) => {
 
 const editUser = async (req, res) => {
   try {
-    const { name, telephone } = req.body;
+    const { name, telephone, isAdmin } = req.body;
     const { id } = req.params;
 
     const user = await Users.findOne({ _id: id });
@@ -92,6 +94,7 @@ const editUser = async (req, res) => {
 
     user.name = name;
     user.telephone = telephone;
+    user.isAdmin = isAdmin;
 
     await user.save();
 

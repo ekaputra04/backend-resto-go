@@ -24,6 +24,22 @@ const getMenuCategory = async (req, res) => {
   }
 };
 
+const getMenuCategoryFromName = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const menuCategory = await MenuCategories.findOne({ name: name });
+    if (!menuCategory) {
+      return res
+        .status(404)
+        .json({ message: "Kategori menu tidak ditemukan!" });
+    }
+    return res.status(200).json({ data: menuCategory });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const addMenuCategories = async (req, res) => {
   try {
     const menuCategoriesToAdd = req.body.data;
@@ -121,4 +137,5 @@ module.exports = {
   addMenuCategories,
   editMenuCategory,
   deleteMenuCategory,
+  getMenuCategoryFromName,
 };
