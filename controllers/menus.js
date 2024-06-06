@@ -25,6 +25,20 @@ const getMenu = async (req, res) => {
   }
 };
 
+const getMenuFromName = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const menu = await Menus.findOne({ name: name });
+    if (!menu) {
+      return res.status(404).json({ message: "Menu tidak ditemukan!" });
+    }
+    return res.status(200).json({ data: menu });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const addMenus = async (req, res) => {
   try {
     const menusToAdd = req.body.data;
@@ -43,15 +57,16 @@ const addMenus = async (req, res) => {
         url_image,
       });
 
-      return res
-        .status(200)
-        .json({ message: "Berhasil menambah menu!", data: menusToAdd });
+      return res.status(200).json({
+        message: "Berhasil menambah menu!",
+        data: menusToAdd,
+      });
     } else if (menusToAdd.length === 0) {
       return res.status(400).json({ message: "Data menu tidak valid!" });
     }
 
     for (let i = 0; i < menusToAdd.length; i++) {
-      const { name, price, category, url_image } = menusToAdd;
+      const { name, price, category, url_image } = menusToAdd[i];
 
       await Menus.create({
         name,
@@ -61,9 +76,10 @@ const addMenus = async (req, res) => {
       });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Berhasil menambah menu!", data: menusToAdd });
+    return res.status(200).json({
+      message: "Berhasil menambah menu!",
+      data: menusToAdd,
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: error.message });
@@ -72,12 +88,12 @@ const addMenus = async (req, res) => {
 
 const editMenu = async (req, res) => {
   try {
-    const { name, price, category } = req.body;
+    const { name, price, category, url_image } = req.body;
     const { id } = req.params;
 
     let updatedMenu = await Menus.findByIdAndUpdate(
       id,
-      { name, price, category },
+      { name, price, category, url_image },
       { new: true }
     );
 
@@ -122,4 +138,11 @@ const deleteMenu = async (req, res) => {
   }
 };
 
-module.exports = { getAllMenus, getMenu, addMenus, editMenu, deleteMenu };
+module.exports = {
+  getAllMenus,
+  getMenu,
+  addMenus,
+  editMenu,
+  deleteMenu,
+  getMenuFromName,
+};

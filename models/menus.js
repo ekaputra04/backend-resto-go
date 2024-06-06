@@ -19,7 +19,8 @@ const menusSchema = new mongoose.Schema(
     },
     url_image: {
       type: String,
-      required: true,
+      required: false,
+      default: "https://i.ibb.co/8m6mtjz/nasi-goreng.jpg",
     },
   },
   {

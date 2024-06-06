@@ -107,6 +107,54 @@ const editUser = async (req, res) => {
   }
 };
 
+const editUserName = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const { id } = req.params;
+
+    const user = await Users.findOne({ _id: id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User tidak ditemukan!" });
+    }
+
+    user.name = name;
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Berhasil mengedit nama user!", data: req.body });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const editUserTelephone = async (req, res) => {
+  try {
+    const { telephone } = req.body;
+    const { id } = req.params;
+
+    const user = await Users.findOne({ _id: id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User tidak ditemukan!" });
+    }
+
+    user.telephone = telephone;
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Berhasil mengedit telephone user!", data: req.body });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -130,8 +178,10 @@ const deleteUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUser,
+  getUserFromTelephone,
   addUsers,
   editUser,
+  editUserName,
+  editUserTelephone,
   deleteUser,
-  getUserFromTelephone,
 };
