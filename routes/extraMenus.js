@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllExtraMenus,
   getExtraMenu,
+  getExtraMenuFromName,
   addExtraMenus,
   editExtraMenu,
   deleteExtraMenu,
@@ -10,6 +11,7 @@ const {
 
 router.get("/", getAllExtraMenus);
 router.get("/:id", getExtraMenu);
+router.get("/name/:name", getExtraMenuFromName);
 router.post("/", addExtraMenus);
 router.put("/:id", editExtraMenu);
 router.delete("/:id", deleteExtraMenu);

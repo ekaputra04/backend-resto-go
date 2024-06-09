@@ -39,6 +39,20 @@ const getMenuFromName = async (req, res) => {
   }
 };
 
+const getMenusFromCategories = async (req, res) => {
+  try {
+    const { category } = req.params;
+    const menus = await Menus.find({ category: category });
+    if (!menus || menus.length === 0) {
+      return res.status(404).json({ message: "Menu tidak ditemukan!" });
+    }
+    return res.status(200).json({ data: menus });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const addMenus = async (req, res) => {
   try {
     const menusToAdd = req.body.data;
@@ -141,8 +155,9 @@ const deleteMenu = async (req, res) => {
 module.exports = {
   getAllMenus,
   getMenu,
+  getMenuFromName,
+  getMenusFromCategories,
   addMenus,
   editMenu,
   deleteMenu,
-  getMenuFromName,
 };

@@ -24,6 +24,20 @@ const getExtraMenu = async (req, res) => {
   }
 };
 
+const getExtraMenuFromName = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const menu = await ExtraMenus.findOne({ name: name });
+    if (!menu) {
+      return res.status(404).json({ message: "Extra menu tidak ditemukan!" });
+    }
+    return res.status(200).json({ data: menu });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const addExtraMenus = async (req, res) => {
   try {
     const extraMenusToAdd = req.body.data;
@@ -115,6 +129,7 @@ const deleteExtraMenu = async (req, res) => {
 module.exports = {
   getAllExtraMenus,
   getExtraMenu,
+  getExtraMenuFromName,
   addExtraMenus,
   editExtraMenu,
   deleteExtraMenu,
