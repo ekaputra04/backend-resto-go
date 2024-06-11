@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const couponsSchema = new mongoose.Schema(
   {
-    code: {
+    couponCode: {
       type: String,
       required: true,
       unique: true,

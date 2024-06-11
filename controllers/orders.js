@@ -2,6 +2,7 @@ const Orders = require("../models/orders");
 const Users = require("../models/users");
 const Menus = require("../models/menus");
 const Coupons = require("../models/coupons");
+const ExtraMenus = require("../models/extraMenus");
 
 async function getAllOrders(req, res) {
   try {
@@ -36,57 +37,82 @@ const addOrders = async (req, res) => {
     }
 
     const processOrder = async (order) => {
-      const { userId, couponCode, date, isInCart, isDone, details } = order;
+      const { user, coupon, date, isInCart, isDone, details } = order;
 
       // Validasi user
-      const userExists = await Users.findById(userId);
+      if (!user || !user._id) {
+        return res.status(400).json({ message: "User tidak valid!" });
+      }
+
+      const userExists = await Users.findById(user._id);
       if (!userExists) {
         return res.status(400).json({ message: "User tidak ditemukan!" });
       }
 
-      // Validasi menu dalam detail order
+      // Validasi menu dan extraMenu dalam detail order
       let totalPrice = 0;
       for (let detail of details) {
-        const menuExists = await Menus.findById(detail.menu);
+        if (!detail.menu || !detail.menu._id) {
+          return res.status(400).json({ message: "Menu tidak valid!" });
+        }
+
+        const menuExists = await Menus.findById(detail.menu._id);
         if (!menuExists) {
           return res.status(400).json({
-            message: `Menu dengan ID ${detail.menu} tidak ditemukan!`,
+            message: `Menu dengan ID ${detail.menu._id} tidak ditemukan!`,
           });
         }
-        totalPrice += menuExists.price * detail.quantity;
+
+        // Validate extraMenu if exists
+        if (detail.extraMenu && detail.extraMenu._id) {
+          const extraMenuExists = await ExtraMenus.findById(
+            detail.extraMenu._id
+          );
+          if (!extraMenuExists) {
+            return res.status(400).json({
+              message: `Extra menu dengan ID ${detail.extraMenu._id} tidak ditemukan!`,
+            });
+          }
+          detail.extraMenu.price = extraMenuExists.price; // Ensure correct price
+        } else {
+          detail.extraMenu = null; // Handle missing extraMenu gracefully
+        }
+
+        detail.menu.price = menuExists.price; // Ensure correct price
+        detail.subTotalMenu =
+          menuExists.price * detail.quantity +
+          (detail.extraMenu ? detail.extraMenu.price : 0);
+        totalPrice += detail.subTotalMenu;
       }
 
       // Validasi kupon
-      let couponData = { couponCode: null, isActive: false, discount: 1 };
-      if (couponCode) {
-        const today = new Date();
-        const coupon = await Coupons.findOne({
-          code: couponCode,
-          dateStarted: { $lte: today },
-          dateEnded: { $gte: today },
-        });
-        if (coupon) {
-          couponData = {
-            couponCode: coupon.code,
-            isActive: true,
-            discount: coupon.discount,
-          };
-          totalPrice *= 1 - coupon.discount / 100; // Menggunakan diskon jika ada
-        }
-      }
+      // let couponData = { couponCode: null, isActive: false, discount: 0 };
+      // if (coupon && coupon.couponCode) {
+      //   const today = new Date();
+      //   const validCoupon = await Coupons.findOne({
+      //     code: coupon.couponCode,
+      //     dateStarted: { $lte: today },
+      //     dateEnded: { $gte: today },
+      //   });
+      //   if (validCoupon) {
+      //     couponData = {
+      //       couponCode: validCoupon.code,
+      //       isActive: true,
+      //       discount: validCoupon.discount,
+      //     };
+      //     totalPrice *= (100 - validCoupon.discount) / 100; // Menggunakan diskon jika ada
+      //   }
+      // }
 
       const newOrder = await Orders.create({
-        userId,
-        coupon: couponData,
+        user,
+        coupon,
         totalPrice,
         date,
         isInCart,
         isDone,
         details,
       });
-
-      // Populate details untuk mendapatkan seluruh detail menu
-      // await newOrder.populate("details.menu").execPopulate();
 
       return newOrder;
     };

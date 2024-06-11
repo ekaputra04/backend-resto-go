@@ -1,12 +1,27 @@
 const mongoose = require("mongoose");
-const Users = require("./users");
-const Menus = require("./menus");
 
 const orderSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Users,
-    required: true,
+  user: {
+    _id: {
+      type: String,
+      default: null,
+      required: true,
+    },
+    name: {
+      type: String,
+      default: null,
+      required: true,
+    },
+    telephone: {
+      type: String,
+      default: null,
+      required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   coupon: {
     couponCode: {
@@ -46,10 +61,54 @@ const orderSchema = new mongoose.Schema({
   details: [
     {
       menu: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: Menus,
+        _id: {
+          type: String,
+          default: null,
+          required: true,
+        },
+        name: {
+          type: String,
+          default: null,
+          required: true,
+        },
+        price: {
+          type: Number,
+          default: 0,
+          required: true,
+        },
+        category: {
+          type: String,
+          default: null,
+          required: true,
+        },
+        url_image: {
+          type: String,
+          default: null,
+          required: true,
+        },
       },
       quantity: {
+        type: Number,
+        required: true,
+      },
+      extraMenu: {
+        _id: {
+          type: String,
+          default: null,
+          required: false,
+        },
+        name: {
+          type: String,
+          default: null,
+          required: false,
+        },
+        price: {
+          type: Number,
+          default: 0,
+          required: false,
+        },
+      },
+      subTotalMenu: {
         type: Number,
         required: true,
       },
