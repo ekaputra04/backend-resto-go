@@ -110,10 +110,10 @@ const addOrders = async (req, res) => {
       }
 
       const newOrder = await Orders.create({
-        user,
-        couponData,
-        totalPrice,
-        date,
+        user: user,
+        coupon: couponData,
+        totalPrice: totalPrice,
+        date: date,
         isInCart,
         isDone,
         details,
