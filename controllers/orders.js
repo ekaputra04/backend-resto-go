@@ -86,27 +86,32 @@ const addOrders = async (req, res) => {
       }
 
       // Validasi kupon
-      // let couponData = { couponCode: null, isActive: false, discount: 0 };
-      // if (coupon && coupon.couponCode) {
-      //   const today = new Date();
-      //   const validCoupon = await Coupons.findOne({
-      //     code: coupon.couponCode,
-      //     dateStarted: { $lte: today },
-      //     dateEnded: { $gte: today },
-      //   });
-      //   if (validCoupon) {
-      //     couponData = {
-      //       couponCode: validCoupon.code,
-      //       isActive: true,
-      //       discount: validCoupon.discount,
-      //     };
-      //     totalPrice *= (100 - validCoupon.discount) / 100; // Menggunakan diskon jika ada
-      //   }
-      // }
+      let couponData = {
+        couponCode: coupon.couponCode,
+        isActive: coupon.isActive,
+        discount: coupon.discount,
+      };
+
+      if (coupon && coupon.couponCode) {
+        const today = new Date();
+        const validCoupon = await Coupons.findOne({
+          code: coupon.couponCode,
+          dateStarted: { $lte: today },
+          dateEnded: { $gte: today },
+        });
+        if (validCoupon) {
+          couponData = {
+            couponCode: coupon.couponCode,
+            isActive: true,
+            discount: validCoupon.discount,
+          };
+          totalPrice *= (100 - validCoupon.discount) / 100; // Menggunakan diskon jika ada
+        }
+      }
 
       const newOrder = await Orders.create({
         user,
-        coupon,
+        couponData,
         totalPrice,
         date,
         isInCart,

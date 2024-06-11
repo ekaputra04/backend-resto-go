@@ -26,7 +26,6 @@ const orderSchema = new mongoose.Schema({
   coupon: {
     couponCode: {
       type: String,
-      default: null,
       required: false,
     },
     isActive: {
