@@ -30,10 +30,12 @@ const orderSchema = new mongoose.Schema({
     },
     isActive: {
       type: Boolean,
+      required: false,
       default: false,
     },
     discount: {
       type: Number,
+      required: false,
       default: 0,
     },
   },

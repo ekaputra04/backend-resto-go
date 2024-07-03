@@ -92,19 +92,18 @@ const addOrders = async (req, res) => {
         discount: coupon.discount,
       };
 
-      if (coupon && coupon.couponCode) {
+      if (coupon.couponCode != null) {
         const today = new Date();
         const validCoupon = await Coupons.findOne({
-          code: coupon.couponCode,
+          couponCode: coupon.couponCode,
           dateStarted: { $lte: today },
           dateEnded: { $gte: today },
         });
+
         if (validCoupon) {
-          couponData = {
-            couponCode: coupon.couponCode,
-            isActive: true,
-            discount: validCoupon.discount,
-          };
+          couponData.couponCode = validCoupon.couponCode;
+          couponData.isActive = true;
+          couponData.discount = validCoupon.discount;
           totalPrice *= (100 - validCoupon.discount) / 100; // Menggunakan diskon jika ada
         }
       }
@@ -310,10 +309,42 @@ const getOrderMenus = async (req, res) => {
   }
 };
 
+const getUserOrderMenus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validasi orders berdasarkan userId
+    const orders = await Orders.find({ "user._id": userId });
+    if (orders.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Order tidak ditemukan untuk user tersebut!" });
+    }
+
+    // Ambil daftar menu dari details untuk semua orders
+    const menus = orders.flatMap((order) =>
+      order.details.map((detail) => ({
+        menu: detail.menu,
+        quantity: detail.quantity,
+        extraMenu: detail.extraMenu,
+        subTotalMenu: detail.subTotalMenu,
+        date: order.date, // tambahkan atribut date
+        isDone: order.isDone,
+      }))
+    );
+
+    return res.status(200).json({ data: menus });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllOrders,
   getOrder,
   getOrderMenus,
+  getUserOrderMenus,
   addOrders,
   editOrder,
   deleteOrder,

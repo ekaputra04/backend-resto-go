@@ -9,11 +9,13 @@ const {
   updateCartOrder,
   updateOrderDone,
   getOrderMenus,
+  getUserOrderMenus,
 } = require("../controllers/orders");
 
 router.get("/", getAllOrders);
 router.get("/:id", getOrder);
 router.get("/:orderId/menus", getOrderMenus);
+router.get("/menus/:userId", getUserOrderMenus);
 router.post("/", addOrders);
 router.put("/:id", editOrder);
 router.put("/update-cart/:id", updateCartOrder);
