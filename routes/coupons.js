@@ -8,10 +8,12 @@ const {
   deleteCoupon,
   getCouponActive,
   isCouponActive,
+  getCouponFromName,
 } = require("../controllers/coupons");
 
 router.get("/active", getCouponActive);
-router.get("/check/:code", isCouponActive);
+router.get("/check/:couponCode", isCouponActive);
+router.get("/name/:couponCode", getCouponFromName);
 router.get("/", getAllCoupons);
 router.get("/:id", getCoupon);
 router.post("/", addCoupons);
