@@ -314,7 +314,38 @@ const getUserOrderMenus = async (req, res) => {
     const { userId } = req.params;
 
     // Validasi orders berdasarkan userId
-    const orders = await Orders.find({ "user._id": userId });
+    const orders = await Orders.find({ "user._id": userId, isDone: false });
+    if (orders.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Order tidak ditemukan untuk user tersebut!" });
+    }
+
+    // Ambil daftar menu dari details untuk semua orders
+    const menus = orders.flatMap((order) =>
+      order.details.map((detail) => ({
+        menu: detail.menu,
+        quantity: detail.quantity,
+        extraMenu: detail.extraMenu,
+        subTotalMenu: detail.subTotalMenu,
+        date: order.date, // tambahkan atribut date
+        isDone: order.isDone,
+      }))
+    );
+
+    return res.status(200).json({ data: menus });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const getUserOrderMenusHistory = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validasi orders berdasarkan userId
+    const orders = await Orders.find({ "user._id": userId, isDone: true });
     if (orders.length === 0) {
       return res
         .status(404)
@@ -345,6 +376,7 @@ module.exports = {
   getOrder,
   getOrderMenus,
   getUserOrderMenus,
+  getUserOrderMenusHistory,
   addOrders,
   editOrder,
   deleteOrder,

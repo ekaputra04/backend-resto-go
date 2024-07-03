@@ -10,12 +10,14 @@ const {
   updateOrderDone,
   getOrderMenus,
   getUserOrderMenus,
+  getUserOrderMenusHistory,
 } = require("../controllers/orders");
 
 router.get("/", getAllOrders);
 router.get("/:id", getOrder);
 router.get("/:orderId/menus", getOrderMenus);
 router.get("/menus/:userId", getUserOrderMenus);
+router.get("/history/:userId", getUserOrderMenusHistory);
 router.post("/", addOrders);
 router.put("/:id", editOrder);
 router.put("/update-cart/:id", updateCartOrder);
