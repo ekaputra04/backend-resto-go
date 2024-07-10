@@ -155,6 +155,30 @@ const editUserTelephone = async (req, res) => {
   }
 };
 
+const editUserRole = async (req, res) => {
+  try {
+    const { isAdmin } = req.body;
+    const { id } = req.params;
+
+    const user = await Users.findOne({ _id: id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User tidak ditemukan!" });
+    }
+
+    user.isAdmin = isAdmin;
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Berhasil mengedit role user!", data: req.body });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -183,5 +207,6 @@ module.exports = {
   editUser,
   editUserName,
   editUserTelephone,
+  editUserRole,
   deleteUser,
 };

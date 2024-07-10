@@ -14,6 +14,26 @@ async function getAllOrders(req, res) {
   }
 }
 
+async function getAllOrdersDone(req, res) {
+  try {
+    const orders = await Orders.find({ isDone: true });
+    return res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+async function getAllOrdersNotDone(req, res) {
+  try {
+    const orders = await Orders.find({ isDone: false });
+    return res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 const getOrder = async (req, res) => {
   try {
     const { id } = req.params;
@@ -260,9 +280,10 @@ const updateCartOrder = async (req, res) => {
   }
 };
 
-const updateOrderDone = async (req, res) => {
+const updateOrderIsDone = async (req, res) => {
   try {
     const { id } = req.params;
+    const { isDone } = req.body;
 
     // Validasi order
     const order = await Orders.findById(id);
@@ -270,14 +291,14 @@ const updateOrderDone = async (req, res) => {
       return res.status(404).json({ message: "Order tidak ditemukan!" });
     }
 
-    // Update isInCart menjadi true
-    order.isDone = true;
+    // Update isDOne
+    order.isDone = isDone;
 
     await order.save();
 
     return res
       .status(200)
-      .json({ message: "Berhasil memperbarui status cart!", data: order });
+      .json({ message: "Berhasil memperbarui status order!", data: order });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ message: error.message });
@@ -373,6 +394,8 @@ const getUserOrderMenusHistory = async (req, res) => {
 
 module.exports = {
   getAllOrders,
+  getAllOrdersDone,
+  getAllOrdersNotDone,
   getOrder,
   getOrderMenus,
   getUserOrderMenus,
@@ -381,5 +404,5 @@ module.exports = {
   editOrder,
   deleteOrder,
   updateCartOrder,
-  updateOrderDone,
+  updateOrderIsDone,
 };
